@@ -1,0 +1,807 @@
+#include <iostream.h>
+#include <conio.h>
+#include <stdlib.h>          
+#include <dos.h>             
+#include <string.h>          
+
+/*************************\
+     Jogo da Velha
+\*************************/
+
+void rules(void);            
+void help(void);             
+void play(void);             
+void restart(void);          
+void credits(void);          
+void draw(void);             
+void printplayer(int);       
+void printcomp(int);        
+void result(void);           
+char name[100];				 
+
+void main()
+{
+ int ch;                     
+ top:
+ cout<<"\nEnter your name\n";
+ cin.getline(name,100);
+ clrscr();
+ gotoxy(10,2);
+ cout<<"This program is a program for the game \"TIC TAC TOE\"\n\n";
+ cout<<"1. Regras\n"
+     <<"2. Ajuda\n"
+     <<"3. Jogar\n"
+     <<"4. Restart\n"
+     <<"6. Sair\n";
+ cin>>ch;
+ switch(ch)
+ {
+  case(1):
+   rules();
+   goto top;
+  case(2):
+   help();
+   goto top;
+  case(3):
+   draw();
+   play();
+   result();
+   break;
+  case(4):
+   restart();
+   goto top;
+  case(5):
+   exit(0);
+  default:
+   play();
+   break;
+ }
+ cout<<"\nAperte qualquer tecla para continuar\t";
+ getch();
+}
+/**************************************/
+/*****  Regras *****/
+/**************************************/
+void rules(void)
+{
+ cout<<"As regras do jogo sao as seguintes:-\n\n"
+     <<"Presione o numero indicado dentro das caixas \n"
+     <<"para colocar o simbolo \" X \" dentro da caixa.\n"
+     <<"\nNao pressione um numero onde os simbolos\n"
+     <<"\"'X' ou 'O'\" ja existirem. Se voce fizer isso\n"
+     <<"o programa fechara devido a caracter ilegal\n"
+     <<"\nSeu objetivo e alinha 3 'X'\n"
+     <<"tanto na horizontal ou vertical ou diagonal\n"
+     <<"para ganhar\n"
+     <<"\nAperte qualquer tecla para continuar\t";
+ getch();
+}
+/**************************************/
+/*****  Funcao de ajuda  *****/
+/**************************************/
+void help(void)
+{
+ cout<<"A regra do jogo e alinhar 3 'X'\n"
+     <<"tanto na horizontal como na vertical\n"
+     <<"para ganhar.\n"
+     <<"\nSempre tente ocupar a caixa do meio e depois\n"
+     <<"os cantos para tentar confundir o computador\n"
+     <<"\nAperte qualquer tecla para continuar\t";
+ getch();
+}
+int place[9]={0,0,0,      
+				  0,0,0,      
+              0,0,0};     
+int flag[9]={0,0,0,       
+				 0,0,0,       
+             0,0,0};      
+/*******************************************/
+/*****  Funcao invocando o jogador *****/
+/*******************************************/
+void play(void)
+{
+ int i,j,k,l;             
+ int print;               
+ int win;                 
+ static int first=0;     
+ static int one23=0;      
+ static int four56=0;    
+ static int seven89=0;    
+ static int one47=0;      
+ static int two58=0;      
+ static int three69=0;    
+ static int one59=0;      
+ static int three57=0;    
+ gotoxy(10,20);
+ for(i=0;i<9;i+=2)
+ {
+  cin>>place[i];
+  print=0;
+  if(flag[(place[i]-1)]!=0)
+  {
+   cout<<"Leia as regras antes de jogar\n";
+   cout<<"Desculpe pressione qualquer tecla para sair\t";
+   getch();
+   exit(0);
+  }
+  printplayer(place[i]);
+  flag[place[i]-1]=1;
+  if(place[0]==5 && flag[0]==0)
+  {
+   printcomp(1);
+   flag[0]=2;
+   print++;
+   first=1;
+  }
+  if(place[0]!=5 && first==0)
+  {
+	printcomp(5);
+	flag[4]=2;
+   print++;
+   first=1;
+  }
+  for(win=0;win<=6;win+=3)   
+  {
+   if(flag[0+win]==0 && flag[1+win]==2 && flag[2+win]==2)
+   {
+    printcomp(1+win);
+    flag[0+win]=2;
+    print++;
+    if(win==0)
+     one23=1;
+    if(win==3)
+     four56=1;
+    if(win==6)
+     seven89=1;
+    result();
+   }
+   if(flag[0+win]==2 && flag[1+win]==0 && flag[2+win]==2)
+   {
+    printcomp(2+win);
+    flag[1+win]=2;
+    print++;
+    if(win==0)
+     one23=1;
+    if(win==3)
+     four56=1;
+    if(win==6)
+     seven89=1;
+    result();
+   }
+   if(flag[0+win]==2 && flag[1+win]==2 && flag[2+win]==0)
+   {
+    printcomp(3+win);
+    flag[2+win]=2;
+    print++;
+    if(win==0)
+     one23=1;
+    if(win==3)
+     four56=1;
+    if(win==6)
+     seven89=1;
+    result();
+   }
+  }
+  for(win=0;win<=2;win++)   
+  {
+   if(flag[0+win]==0 && flag[3+win]==2 && flag[6+win]==2)
+   {
+    printcomp(1+win);
+    flag[0+win]=2;
+    print++;
+    if(win==0)
+     one47=1;
+    if(win==1)
+     two58=1;
+    if(win==2)
+     three69=1;
+    result();
+   }
+   if(flag[0+win]==2 && flag[3+win]==0 && flag[6+win]==2)
+   {
+    printcomp(4+win);
+    flag[3+win]=2;
+    print++;
+    if(win==0)
+     one47=1;
+    if(win==1)
+     two58=1;
+    if(win==2)
+     three69=1;
+    result();
+   }
+   if(flag[0+win]==2 && flag[3+win]==2 && flag[6+win]==0)
+   {
+    printcomp(7+win);
+    flag[6+win]=2;
+    print++;
+    if(win==0)
+     one47=1;
+    if(win==1)
+     two58=1;
+    if(win==2)
+     three69=1;
+    result();
+   }
+  }
+  for(win=0;win<=2;win+=2)  
+  {
+   if(flag[0+win]==0 && flag[4]==2 && flag[8-win]==2)
+   {
+    printcomp(1+win);
+    flag[0+win]=2;
+    print++;
+    if(win==0)
+     one59=1;
+    if(win==2)
+     three57=1;
+    result();
+   }
+   if(flag[0+win]==2 && flag[4]==0 && flag[8-win]==2)
+   {
+    printcomp(5);
+    flag[4]=2;
+    print++;
+    if(win==0)
+     one59=1;
+    if(win==2)
+     three57=1;
+    result();
+   }
+   if(flag[0+win]==2 && flag[4]==2 && flag[8-win]==0)
+   {
+    printcomp(9-win);
+    flag[8-win]=2;
+    print++;
+    if(win==0)
+     one59=1;
+    if(win==2)
+     three57=1;
+    result();
+   }
+  }
+  for(k=0;k<=4;k+=4)         
+	for(j=0;j<=4;j+=4)
+	 if((place[0]==1+j-k && place[2]==5+j||
+		  place[0]==1+j-k && place[4]==5+j||
+		  place[0]==1+j-k && place[6]==5+j||
+		  place[0]==1+j-k && place[8]==5+j||
+		  place[2]==1+j-k && place[0]==5+j||
+		  place[2]==1+j-k && place[4]==5+j||
+		  place[2]==1+j-k && place[6]==5+j||
+		  place[2]==1+j-k && place[8]==5+j||
+		  place[4]==1+j-k && place[0]==5+j||
+		  place[4]==1+j-k && place[2]==5+j||
+		  place[4]==1+j-k && place[6]==5+j||
+		  place[4]==1+j-k && place[8]==5+j||
+		  place[6]==1+j-k && place[0]==5+j||
+		  place[6]==1+j-k && place[2]==5+j||
+		  place[6]==1+j-k && place[4]==5+j||
+		  place[6]==1+j-k && place[8]==5+j||
+		  place[6]==1+j-k && place[8]==5+j||
+		  place[6]==1+j-k && place[8]==5+j||
+		  place[8]==1+j-k && place[0]==5+j||
+		  place[8]==1+j-k && place[2]==5+j||
+		  place[8]==1+j-k && place[4]==5+j||
+		  place[8]==1+j-k && place[6]==5+j)
+				&& one59==0 && print==0)
+	 {
+	  one59=1;
+	  if(j==0 && k==0 && flag[8]==0)
+	  {
+		printcomp(9);
+		flag[8]=2;
+		print++;
+	  }
+	  if(j==4 && k==0 && flag[0]==0)
+	  {
+		printcomp(1);
+		flag[0]=2;
+		print++;
+	  }
+	  if(j==4 && k==4 && flag[4]==0)
+	  {
+		printcomp(5);
+		flag[4]=2;
+		print++;
+	  }
+	 }
+  for(k=0;k<=2;k+=2)        
+	for(j=0;j<=2;j+=2)
+	 if((place[0]==3+j-k && place[2]==5+j||
+		  place[0]==3+j-k && place[4]==5+j||
+		  place[0]==3+j-k && place[6]==5+j||
+		  place[0]==3+j-k && place[8]==5+j||
+		  place[2]==3+j-k && place[0]==5+j||
+		  place[2]==3+j-k && place[4]==5+j||
+		  place[2]==3+j-k && place[6]==5+j||
+		  place[2]==3+j-k && place[8]==5+j||
+		  place[4]==3+j-k && place[0]==5+j||
+		  place[4]==3+j-k && place[2]==5+j||
+		  place[4]==3+j-k && place[6]==5+j||
+		  place[4]==3+j-k && place[8]==5+j||
+		  place[6]==3+j-k && place[0]==5+j||
+		  place[6]==3+j-k && place[2]==5+j||
+		  place[6]==3+j-k && place[4]==5+j||
+		  place[6]==3+j-k && place[8]==5+j||
+		  place[6]==3+j-k && place[8]==5+j||
+		  place[6]==3+j-k && place[8]==5+j||
+		  place[8]==3+j-k && place[0]==5+j||
+		  place[8]==3+j-k && place[2]==5+j||
+		  place[8]==3+j-k && place[4]==5+j||
+		  place[8]==3+j-k && place[6]==5+j)
+			 && three57==0 && print==0)
+	 {
+	  three57=1;
+	  if(j==0 && k==0 && flag[6]==0)
+	  {
+		printcomp(7);
+		flag[6]=2;
+		print++;
+	  }
+	  if(j==2 && k==0 && flag[2]==0)
+	  {
+		printcomp(3);
+		flag[2]=2;
+		print++;
+	  }
+	  if(j==2 && k==2 && flag[4]==0)
+	  {
+		printcomp(5);
+		flag[4]=2;
+		print++;
+	  }
+	 }
+  for(l=0;l<7;l+=3)          
+   for(k=0;k<2;k++)
+	 for(j=0;j<2;j++)
+	  if((place[0]==1+j-k+l && place[2]==2+j+l||
+		   place[0]==1+j-k+l && place[4]==2+j+l||
+		   place[0]==1+j-k+l && place[6]==2+j+l||
+		   place[0]==1+j-k+l && place[8]==2+j+l||
+		   place[2]==1+j-k+l && place[0]==2+j+l||
+		   place[2]==1+j-k+l && place[4]==2+j+l||
+		   place[2]==1+j-k+l && place[6]==2+j+l||
+		   place[2]==1+j-k+l && place[8]==2+j+l||
+		   place[4]==1+j-k+l && place[0]==2+j+l||
+		   place[4]==1+j-k+l && place[2]==2+j+l||
+		   place[4]==1+j-k+l && place[6]==2+j+l||
+		   place[4]==1+j-k+l && place[8]==2+j+l||
+		   place[6]==1+j-k+l && place[0]==2+j+l||
+		   place[6]==1+j-k+l && place[2]==2+j+l||
+		   place[6]==1+j-k+l && place[4]==2+j+l||
+		   place[6]==1+j-k+l && place[6]==2+j+l||
+		   place[8]==1+j-k+l && place[0]==2+j+l||
+		   place[8]==1+j-k+l && place[2]==2+j+l||
+		   place[8]==1+j-k+l && place[4]==2+j+l||
+		   place[8]==1+j-k+l && place[6]==2+j+l)
+             && (one23==0) && (four56==0)
+           && (seven89)==0 && print==0)
+	  {
+	   if(j==0 && k==0 && l==0 && flag[2]==0)
+	   {
+		 printcomp(3);
+		 flag[2]=2;
+		 print++;
+       one23=1;
+	   }
+	   if(j==1 && k==0 && l==0 && flag[0]==0)
+	   {
+	    printcomp(1);
+		 flag[0]=2;
+		 print++;
+       one23=1;
+	   }
+	   if(j==1 && k==1 && l==0 && flag[1]==0)
+	   {
+	    printcomp(2);
+		 flag[1]=2;
+		 print++;
+       one23=1;
+	   }
+	   if(j==0 && k==0 && l==3 && flag[5]==0)
+	   {
+		 printcomp(6);
+		 flag[5]=2;
+		 print++;
+       four56=1;
+	   }
+	   if(j==1 && k==0 && l==3 && flag[3]==0)
+	   {
+		 printcomp(4);
+		 flag[3]=2;
+		 print++;
+       four56=1;
+	   }
+	   if(j==1 && k==1 && l==3 && flag[4]==0)
+	   {
+		 printcomp(5);
+		 flag[4]=2;
+		 print++;
+       four56=1;
+	   }
+      if(j==0 && k==0 && l==6 && flag[8]==0)
+	   {
+		 printcomp(9);
+		 flag[8]=2;
+		 print++;
+       seven89=1;
+	   }
+	   if(j==1 && k==0 && l==6 && flag[6]==0)
+	   {
+		 printcomp(7);
+		 flag[6]=2;
+		 print++;
+       seven89=1;
+	   }
+	   if(j==1 && k==1 && l==6 && flag[7]==0)
+	   {
+		 printcomp(8);
+		 flag[7]=2;
+		 print++;
+       seven89=1;
+	   }
+     }
+  for(l=0;l<3;l++)          
+  for(k=0;k<4;k+=3)
+	for(j=0;j<4;j+=3)
+	 if((place[0]==1+j-k+l && place[2]==4+j+l||
+		  place[0]==1+j-k+l && place[4]==4+j+l||
+		  place[0]==1+j-k+l && place[6]==4+j+l||
+		  place[0]==1+j-k+l && place[8]==4+j+l||
+		  place[2]==1+j-k+l && place[0]==4+j+l||
+		  place[2]==1+j-k+l && place[4]==4+j+l||
+		  place[2]==1+j-k+l && place[6]==4+j+l||
+		  place[2]==1+j-k+l && place[8]==4+j+l||
+		  place[4]==1+j-k+l && place[0]==4+j+l||
+		  place[4]==1+j-k+l && place[2]==4+j+l||
+		  place[4]==1+j-k+l && place[6]==4+j+l||
+		  place[4]==1+j-k+l && place[8]==4+j+l||
+		  place[6]==1+j-k+l && place[0]==4+j+l||
+		  place[6]==1+j-k+l && place[2]==4+j+l||
+		  place[6]==1+j-k+l && place[4]==4+j+l||
+		  place[6]==1+j-k+l && place[8]==4+j+l||
+		  place[8]==1+j-k+l && place[0]==4+j+l||
+		  place[8]==1+j-k+l && place[2]==4+j+l||
+		  place[8]==1+j-k+l && place[4]==4+j+l||
+		  place[8]==1+j-k+l && place[6]==4+j+l)
+			 	&& (one47==0) && (two58==0)
+          && (three69==0) && print==0)
+	 {
+	  if(j==0 && k==0 && l==0 && flag[6]==0)
+	  {
+		printcomp(7);
+		flag[6]=2;
+		print++;
+      one47=1;
+	  }
+	  if(j==3 && k==0 && l==0 && flag[0]==0)
+	  {
+		printcomp(1);
+		flag[0]=2;
+		print++;
+      one47=1;
+	  }
+	  if(j==3 && k==3 && l==0 && flag[3]==0)
+	  {
+		printcomp(4);
+		flag[3]=2;
+		print++;
+      one47=1;
+	 }
+    if(j==0 && k==0 && l==1 && flag[7]==0)
+	  {
+		printcomp(8);
+		flag[7]=2;
+		print++;
+      two58=1;
+	  }
+	  if(j==3 && k==0 && l==1 && flag[1]==0)
+	  {
+		printcomp(2);
+		flag[1]=2;
+		print++;
+      two58=1;
+	  }
+	  if(j==3 && k==3 && l==1 && flag[4]==0)
+	  {
+		printcomp(5);
+		flag[4]=2;
+		print++;
+      two58=1;
+	 }
+    if(j==0 && k==0 && l==2 && flag[8]==0)
+	  {
+		printcomp(9);
+		flag[8]=2;
+		print++;
+      three69=1;
+	  }
+	  if(j==3 && k==0 && l==2 && flag[2]==0)
+     {
+      printcomp(3);
+      flag[2]=2;
+      print++;
+      three69=1;
+     }
+     if(j==3 && k==3 && l==2 && flag[5]==0)
+     {
+      printcomp(6);
+      flag[5]=2;
+      print++;
+      three69=1;
+    }
+  }
+  if(print==0 && flag[0]==0)
+  {
+   printcomp(1);
+   flag[0]=2;
+   print++;
+  }
+  if(print==0 && flag[1]==0)
+  {
+   printcomp(2);
+   flag[1]=2;
+   print++;
+  }
+  if(print==0 && flag[2]==0)
+  {
+   printcomp(3);
+   flag[2]=2;
+   print++;
+  }
+  if(print==0 && flag[3]==0)
+  {
+   printcomp(4);
+   flag[3]=2;
+   print++;
+  }
+  if(print==0 && flag[4]==0)
+  {
+   printcomp(5);
+   flag[4]=2;
+   print++;
+  }
+  if(print==0 && flag[5]==0)
+  {
+   printcomp(6);
+   flag[5]=2;
+   print++;
+  }
+  if(print==0 && flag[6]==0)
+  {
+   printcomp(7);
+   flag[6]=2;
+   print++;
+  }
+  if(print==0 && flag[7]==0)
+  {
+   printcomp(8);
+   flag[7]=2;
+   print++;
+  }
+  if(print==0 && flag[8]==0)
+  {
+   printcomp(9);
+   flag[8]=2;
+   print++;
+  }
+  if(print==0  && flag[0]==0)
+  {
+   gotoxy(60,22);
+   cout<<"Desculpe o jogo nao pode continuar\n";
+   gotoxy(60,23);
+   cout<<"pressione qualquer tecla para sair\n";
+   getch();
+   exit(0);
+  }
+  
+  if(flag[0]==1 && flag[1]==1  && flag[2]==1||
+     flag[3]==1 && flag[4]==1  && flag[5]==1||
+     flag[6]==1 && flag[7]==1  && flag[8]==1||
+     flag[0]==1 && flag[3]==1  && flag[6]==1||
+     flag[1]==1 && flag[4]==1  && flag[7]==1||
+     flag[2]==1 && flag[5]==1  && flag[8]==1||
+     flag[1]==1 && flag[4]==1  && flag[8]==1||
+     flag[2]==1 && flag[4]==1  && flag[6]==1)
+    result();
+ }
+}
+/**********************************************/
+/***** Funcao mostrando o jogador   *****/
+/**********************************************/
+void printplayer(int place)  
+{
+ if(place==1)
+ {
+  gotoxy(30,6);
+  cout<<"X";
+  gotoxy(10,20);
+ }
+ else if(place==2)
+ {
+  gotoxy(40,6);
+  cout<<"X";
+  gotoxy(10,20);
+ }
+ else if(place==3)
+ {
+  gotoxy(50,6);
+  cout<<"X";
+  gotoxy(10,20);
+ }
+ else if(place==4)
+ {
+  gotoxy(30,11);
+  cout<<"X";
+  gotoxy(10,20);
+ }
+ else if(place==5)
+ {
+  gotoxy(40,11);
+  cout<<"X";
+  gotoxy(10,20);
+ }
+ else if(place==6)
+ {
+  gotoxy(50,11);
+  cout<<"X";
+  gotoxy(10,20);
+ }
+ else if(place==7)
+ {
+  gotoxy(30,16);
+  cout<<"X";
+  gotoxy(10,20);
+ }
+ else if(place==8)
+ {
+  gotoxy(40,16);
+  cout<<"X";
+  gotoxy(10,20);
+ }
+ else if(place==9)
+ {
+  gotoxy(50,16);
+  cout<<"X";
+  gotoxy(10,20);
+ }
+}
+/*************************************************/
+/*****  Funcao mostrando o computador  *****/
+/*************************************************/
+void printcomp(int place)   
+{
+ if(place==1)
+ {
+  gotoxy(30,6);
+  cout<<"O";
+  gotoxy(10,20);
+ }
+ else if(place==2)
+ {
+  gotoxy(40,6);
+  cout<<"O";
+  gotoxy(10,20);
+ }
+ else if(place==3)
+ {
+  gotoxy(50,6);
+  cout<<"O";
+  gotoxy(10,20);
+ }
+ else if(place==4)
+ {
+  gotoxy(30,11);
+  cout<<"O";
+  gotoxy(10,20);
+ }
+ else if(place==5)
+ {
+  gotoxy(40,11);
+  cout<<"O";
+  gotoxy(10,20);
+ }
+ else if(place==6)
+ {
+  gotoxy(50,11);
+  cout<<"O";
+  gotoxy(10,20);
+ }
+ else if(place==7)
+ {
+  gotoxy(30,16);
+  cout<<"O";
+  gotoxy(10,20);
+ }
+ else if(place==8)
+ {
+  gotoxy(40,16);
+  cout<<"O";
+  gotoxy(10,20);
+ }
+ else if(place==9)
+ {
+  gotoxy(50,16);
+  cout<<"O";
+  gotoxy(10,20);
+ }
+}
+/****************************************/
+/*****  Funcao de resultado  *****/
+/****************************************/
+void result(void)
+{
+ int l;							  
+ l=strlen(name);
+ 
+ if(flag[0]==1 && flag[1]==1  && flag[2]==1||
+    flag[3]==1 && flag[4]==1  && flag[5]==1||
+    flag[6]==1 && flag[7]==1  && flag[8]==1||
+    flag[0]==1 && flag[3]==1  && flag[6]==1||
+    flag[1]==1 && flag[4]==1  && flag[7]==1||
+    flag[2]==1 && flag[5]==1  && flag[8]==1||
+    flag[0]==1 && flag[4]==1  && flag[8]==1||
+    flag[2]==1 && flag[4]==1  && flag[6]==1)
+ {
+  gotoxy(40,22);
+  cout.write(name,l);
+  cout<<" Voce venceu\n";
+  cout<<"\n\nPressione qualquer tecla para continuar\t";
+  getch();
+ }
+ else
+ {
+  gotoxy(40,22);
+  cout.write(name,l);
+  cout<<" Mais sorte da proxima vez\n";
+  cout<<"\n\nPressione qualquer tecla para continuar\t";
+  getch();
+ }
+ exit(0);
+}
+/*********************************/
+/*****  Funcao de reiniciar  *****/
+/*********************************/
+void restart(void)
+{
+ sleep(1);
+}
+
+/*************************************/
+/*****  Funcao de desenho  *****/
+/*************************************/
+void draw(void)
+{
+ int i,j;                    
+ int num=1;                  
+ char h=205;                 
+ char v=186;                 
+ char c=206;                 
+ for(i=6;i<12;i+=5)
+ {
+  gotoxy(25,i+3);
+  for(j=0;j<=30;j++)
+   cout<<h;
+ }
+ for(j=10;j<=20;j+=10)
+ {
+  for(i=2;i<17;i++)
+  {
+   gotoxy(25+j,i+3);
+   cout<<v;
+  }
+ }
+  for(i=35;i<=45;i+=10)
+   for(j=9;j<=14;j+=5)
+   {
+    gotoxy(i,j);
+    cout<<c;
+   }
+ for(j=0;j<=10;j+=5)
+  for(i=0;i<=20;i+=10)
+  {
+	gotoxy(34+i,8+j);
+	cout<<num++;
+  }
+}
